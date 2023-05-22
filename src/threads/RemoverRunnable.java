@@ -1,6 +1,6 @@
-package tp.threads;
+package src.threads;
 
-import tp.listas.Lista;
+import src.listas.Lista;
 
 public class RemoverRunnable implements Runnable {
 
@@ -19,7 +19,7 @@ public class RemoverRunnable implements Runnable {
         for(int i = 0; i < N; i++){
             boolean exito = lista.remove(String.format("elem %d", i));
             // if(exito) {
-            //     System.out.println(String.format("(%s) RM elem %d", id, i));
+            // System.out.println(String.format("(%s) RM elem %d", id, i));
             // }
         }
 	}

@@ -1,6 +1,6 @@
-package tp.threads;
+package src.threads;
 
-import tp.listas.Lista;
+import src.listas.Lista;
 
 public class AdderRunnable implements Runnable {
 
@@ -19,7 +19,7 @@ public class AdderRunnable implements Runnable {
         for(int i = 0; i < N; i++){
             boolean exito = lista.add(String.format("elem %d", i));
             // if(exito) {
-            //     System.out.println(String.format("(%s) ADD elem %d", id, i));
+            // System.out.println(String.format("(%s) ADD elem %d", id, i));
             // }
         }
 	}

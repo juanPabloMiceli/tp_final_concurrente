@@ -1,4 +1,4 @@
-package tp.listas;
+package src.listas;
 
 public class ListaLockOptimista implements Lista {
 	
