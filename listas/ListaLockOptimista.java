@@ -1,3 +1,5 @@
+package tp.listas;
+
 public class ListaLockOptimista implements Lista {
 	
     Node head;
@@ -37,7 +39,8 @@ public class ListaLockOptimista implements Lista {
 
     }
 
-    public boolean remove(int key){
+    public boolean remove(Object o){
+        int key = o.hashCode();
         while(true){
             Node pred = head;
             Node curr = head.next;

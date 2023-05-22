@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tp.listas.ListaGranularidadFina;
+import tp.listas.ListaLockFree;
+import tp.listas.ListaLockOptimista;
+import tp.listas.Lista;
 import tp.threads.AdderRunnable;
 import tp.threads.RemoverRunnable;
 // 1. Como estructura general de los escenarios puede considerar que:
@@ -30,41 +33,44 @@ import tp.threads.RemoverRunnable;
 public class MainVariacionDensidad {
     public static void main(String[] args) {
 
-        for(int densidadAdders = 1; densidadAdders <= 9; densidadAdders++) {
+        List<Lista> listas = List.of(new ListaGranularidadFina(), new ListaLockOptimista(), new ListaLockFree());
+        for(Lista lista : listas) {
+            for(int densidadAdders = 1; densidadAdders <= 9; densidadAdders++) {
 
-            ListaGranularidadFina lista = new ListaGranularidadFina();
-            List<Thread> adders = new ArrayList<>();
-            for(int i = 0; i < densidadAdders; i++){
-                Runnable runnable = new AdderRunnable(lista, 50000, "ADD Thread"+i);
-                adders.add(new Thread(runnable));
-            }
-            List<Thread> removers = new ArrayList<>();
+                // ListaGranularidadFina lista = new ListaGranularidadFina();
+                List<Thread> adders = new ArrayList<>();
+                for(int i = 0; i < densidadAdders; i++){
+                    Runnable runnable = new AdderRunnable(lista, 10000, "ADD Thread"+i);
+                    adders.add(new Thread(runnable));
+                }
+                List<Thread> removers = new ArrayList<>();
 
-            for(int i = 0; i < 10 - densidadAdders; i++){
-                Runnable runnable = new RemoverRunnable(lista, 50000, "RM Thread"+i);
-                removers.add(new Thread(runnable));
-            }
-            
-            long start = System.nanoTime();
-            for(Thread t : adders){
-                t.start();
-            }
-            for(Thread t : removers){
-                t.start();
-            }
-            try {
+                for(int i = 0; i < 10 - densidadAdders; i++){
+                    Runnable runnable = new RemoverRunnable(lista, 10000, "RM Thread"+i);
+                    removers.add(new Thread(runnable));
+                }
+
+                long start = System.nanoTime();
                 for(Thread t : adders){
-                    t.join();
+                    t.start();
                 }
                 for(Thread t : removers){
-                    t.join();
+                    t.start();
                 }
-            } catch(Exception e){
-                return;
+                try {
+                    for(Thread t : adders){
+                        t.join();
+                    }
+                    for(Thread t : removers){
+                        t.join();
+                    }
+                } catch(Exception e){
+                    return;
+                }
+                long end = System.nanoTime();
+                double milliseconds = (double) (end - start) / 1_000_000.0;
+                System.out.println("Tipo: " + lista.getClass().getSimpleName() + " Densidad: " + densidadAdders + " Duration: " + milliseconds);
             }
-            long end = System.nanoTime();
-            double milliseconds = (double) (end - start) / 1_000_000.0;
-            System.out.println("Densidad: " + densidadAdders + " Duration: " + milliseconds);
         }
     }
 }

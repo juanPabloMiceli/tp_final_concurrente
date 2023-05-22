@@ -1,3 +1,4 @@
+package tp.listas;
 import java.util.concurrent.atomic.AtomicMarkableReference;
 
 public class NodeLockFree {
