@@ -1,4 +1,7 @@
-package src.listas;
+package src.listas.lockbound.granularidad_fina;
+
+import src.listas.lockbound.Node;
+import src.listas.Lista;
 
 public class ListaGranularidadFina implements Lista {
 	

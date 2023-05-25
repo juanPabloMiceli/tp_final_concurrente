@@ -1,7 +1,6 @@
 package src.listas;
 
 public interface Lista{
-	
 
     public boolean add(Object o);
 

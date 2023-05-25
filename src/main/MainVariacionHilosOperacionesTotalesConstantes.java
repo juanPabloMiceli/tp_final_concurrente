@@ -11,30 +11,33 @@ import src.listas.*;
 import src.threads.*;
 import src.utils.*;
 
-public class MainVariacionDensidad {
+public class MainVariacionHilosOperacionesTotalesConstantes {
     public static void main(String[] args) {
 
         int numIterations = 50;
-        int numOperations = 10000;
+        int numOperacionesTotales = 96000;
 
-        runExperiment(numIterations, numOperations, ListaType.LOCK_FREE);
-        runExperiment(numIterations, numOperations, ListaType.LOCK_OPTIMISTA);
-        runExperiment(numIterations, numOperations, ListaType.GRANULARIDAD_FINA);
+        runExperiment(numIterations, numOperacionesTotales, ListaType.LOCK_FREE);
+        runExperiment(numIterations, numOperacionesTotales, ListaType.LOCK_OPTIMISTA);
+        runExperiment(numIterations, numOperacionesTotales, ListaType.GRANULARIDAD_FINA);
+
+
     }
 
-    private static void runExperiment(int numIterations, int numOperacionesPorHilo, ListaType listaType) {
-        List<CSVRecordVariacionDensidad> mediciones = new ArrayList<>();
+    private static void runExperiment(int numIterations, int numOperacionesTotales, ListaType listaType) {
+        List<CSVRecordVariacionHilosOperacionesTotalesConstantes> mediciones = new ArrayList<>();
         for(int iter = 0; iter < numIterations; iter++) {
-            for(int densidadAdders = 1; densidadAdders <= 9; densidadAdders++) {
+            for(int hilos = 1; hilos <= 5; hilos++) {
+                int numOperacionesPorHilo = (numOperacionesTotales / 2) / hilos;
                 Lista lista = ListaFactory.getLista(listaType);
                 List<Thread> adders = new ArrayList<>();
-                for(int i = 0; i < densidadAdders; i++){
+                for(int i = 0; i < hilos; i++){
                     Runnable runnable = new AdderRunnable(lista, numOperacionesPorHilo, "ADD Thread"+i);
                     adders.add(new Thread(runnable));
                 }
                 List<Thread> removers = new ArrayList<>();
 
-                for(int i = 0; i < 10 - densidadAdders; i++){
+                for(int i = 0; i < hilos; i++){
                     Runnable runnable = new RemoverRunnable(lista, numOperacionesPorHilo, "RM Thread"+i);
                     removers.add(new Thread(runnable));
                 }
@@ -58,12 +61,12 @@ public class MainVariacionDensidad {
                 }
                 long end = System.nanoTime();
                 double milliseconds = (double) (end - start) / 1_000_000.0;
-                mediciones.add(new CSVRecordVariacionDensidad(iter, numOperacionesPorHilo, densidadAdders, 10 - densidadAdders, milliseconds));
+                mediciones.add( new CSVRecordVariacionHilosOperacionesTotalesConstantes(iter, numOperacionesTotales, numOperacionesPorHilo, hilos * 2, milliseconds));
             }
             System.out.printf("Iter: %d\n", iter);
         }
-        String[] headers = {"Iteracion", "numAdders", "numRemovers", "Time (ms)"};
-        CSVWriter.writeCSV(mediciones, headers, "data/MainVariacionDensidad_"+ listaType.name() +".csv" );
+        String[] headers = {"Iteracion", "OperacionesTotales", "OperacionesPorHilo", "CantidadHilos", "Time (ms)"};
+        CSVWriter.writeCSV(mediciones, headers, "data/MainVariacionHilosOperacionesTotalesConstantes_"+ listaType.name() +".csv" );
     }
 }
 

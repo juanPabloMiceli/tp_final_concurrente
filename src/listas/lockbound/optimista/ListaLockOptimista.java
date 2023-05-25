@@ -1,4 +1,7 @@
-package src.listas;
+package src.listas.lockbound.optimista;
+
+import src.listas.lockbound.Node;
+import src.listas.Lista;
 
 public class ListaLockOptimista implements Lista {
 	

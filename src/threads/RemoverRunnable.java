@@ -19,7 +19,7 @@ public class RemoverRunnable implements Runnable {
         for(int i = 0; i < N; i++){
             boolean exito = lista.remove(String.format("elem %d", i));
             // if(exito) {
-            // System.out.println(String.format("(%s) RM elem %d", id, i));
+            //     System.out.println(String.format("(%s) RM elem %d", id, i));
             // }
         }
 	}

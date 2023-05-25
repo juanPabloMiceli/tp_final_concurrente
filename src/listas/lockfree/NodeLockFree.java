@@ -1,4 +1,4 @@
-package src.listas;
+package src.listas.lockfree;
 import java.util.concurrent.atomic.AtomicMarkableReference;
 
 public class NodeLockFree {

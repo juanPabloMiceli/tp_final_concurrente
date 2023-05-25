@@ -1,6 +1,8 @@
-package src.listas;
+package src.listas.lockfree;
 
 import java.util.concurrent.atomic.AtomicMarkableReference;
+
+import src.listas.Lista;
 
 public class ListaLockFree implements Lista {
 	
@@ -8,32 +10,29 @@ public class ListaLockFree implements Lista {
     AtomicMarkableReference<NodeLockFree> tail;
 
     public ListaLockFree() {
-        head = new AtomicMarkableReference<>(new NodeLockFree(Integer.MIN_VALUE), false);
-        tail = new AtomicMarkableReference<>(new NodeLockFree(Integer.MAX_VALUE), false);
-        head.getReference().next = tail;
+	NodeLockFree headNode = new NodeLockFree(Integer.MIN_VALUE);
+	NodeLockFree tailNode = new NodeLockFree(Integer.MAX_VALUE);
+        head = new AtomicMarkableReference<>(headNode, false);
+        tail = new AtomicMarkableReference<>(tailNode, false);
+	headNode.next = new AtomicMarkableReference<>(tailNode, false);
+	tailNode.next = new AtomicMarkableReference<>(null, false);
+
     }
 
-    private NodeLockFree[] find(Object o){
+    private Window find(Object o){
         int key = o.hashCode();
         NodeLockFree pred, curr, succ;
         boolean[] marked ={false};
         boolean snip;
-        retry: while (true) {
+        retry:
+        while (true) {
             pred = head.getReference();
             curr = pred.next.getReference();
             while (true) {
                 if(curr == tail.getReference()){
-                    NodeLockFree[] res = new NodeLockFree[2];
-                    res[0] = pred;
-                    res[1] = curr;
-                    return res;
+                    return new Window(pred, curr);
                 }
-                try {
-                    succ = curr.next.get(marked);
-                } catch (NullPointerException e){
-                    System.out.printf("IntegerMax: %d, curr: %d\n", Integer.MAX_VALUE, curr.key);
-                    throw new RuntimeException("NINOS");
-                }
+                succ = curr.next.get(marked);
                 while (marked[0]){
                     snip = pred.next.compareAndSet(curr, succ, false, false);
                     if (!snip) continue retry;
@@ -41,10 +40,7 @@ public class ListaLockFree implements Lista {
                     succ = curr.next.get(marked);
                 }
                 if (curr.key >= key) {
-                    NodeLockFree[] res = new NodeLockFree[2];
-                    res[0] = pred;
-                    res[1] = curr;
-                    return res;
+                    return new Window(pred, curr);
                 }
                 pred = curr;
                 curr = succ;
@@ -54,12 +50,10 @@ public class ListaLockFree implements Lista {
 
     public boolean add(Object o) {
         int key = o.hashCode();
-        NodeLockFree[] predAndCurr;
-        NodeLockFree pred, curr;
         while (true){
-            predAndCurr = find(o);
-            pred = predAndCurr[0];
-            curr = predAndCurr[1];
+            Window window = find(o);
+            NodeLockFree pred = window.pred;
+            NodeLockFree curr = window.curr;
             if (curr.key == key){
                 return false;
             } else{
@@ -75,13 +69,11 @@ public class ListaLockFree implements Lista {
 
     public boolean remove (Object o) {
         int key = o.hashCode();
-        NodeLockFree[] predAndCurr;
-        NodeLockFree pred, curr;
         boolean snip;
         while (true) {
-            predAndCurr = find(o);
-            pred = predAndCurr[0];
-            curr = predAndCurr[1];
+            Window window = find(o);
+            NodeLockFree pred = window.pred;
+            NodeLockFree curr = window.curr;
             if (curr.key != key)
                 return false;
             else {

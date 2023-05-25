@@ -1,4 +1,4 @@
-package src.listas;
+package src.listas.lockbound;
 
 import java.util.concurrent.locks.ReentrantLock;
 

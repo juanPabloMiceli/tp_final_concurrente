@@ -19,7 +19,7 @@ public class AdderRunnable implements Runnable {
         for(int i = 0; i < N; i++){
             boolean exito = lista.add(String.format("elem %d", i));
             // if(exito) {
-            // System.out.println(String.format("(%s) ADD elem %d", id, i));
+            //     System.out.println(String.format("(%s) ADD elem %d", id, i));
             // }
         }
 	}
