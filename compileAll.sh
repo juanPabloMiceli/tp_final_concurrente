@@ -1,0 +1,3 @@
+javac src/main/MainVariacionDensidad.java 
+javac src/main/MainVariacionHilosOperacionesTotalesConstantes.java
+javac src/main/MainVariacionHilosOperacionesPorHiloConstantes.java 

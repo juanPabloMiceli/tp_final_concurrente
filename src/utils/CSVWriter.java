@@ -20,7 +20,7 @@ public class CSVWriter {
                 csvPrinter.printRecord((Object[]) record);
             }
 
-            System.out.println("CSV file generated successfully.");
+            System.out.println("%s generated successfully.".format(csvFile));
 
         } catch (IOException e) {
             e.printStackTrace();
