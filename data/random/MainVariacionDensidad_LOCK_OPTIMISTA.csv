@@ -1,4 +1,4 @@
-Iteracion,numAdders,numRemovers,Time (ms)
+Iteracion,operacionesPorHilo,numAdders,numRemovers,Time (ms)
 0,10000,1,9,116.906541
 0,10000,2,8,176.936965
 0,10000,3,7,327.469318

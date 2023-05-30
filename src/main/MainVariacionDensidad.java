@@ -62,7 +62,7 @@ public class MainVariacionDensidad {
             }
             System.out.printf("Iter: %d\n", iter);
         }
-        String[] headers = {"Iteracion", "numAdders", "numRemovers", "Time (ms)"};
+        String[] headers = {"Iteracion", "operacionesPorHilo", "numAdders", "numRemovers", "Time (ms)"};
         CSVWriter.writeCSV(mediciones, headers, "data/MainVariacionDensidad_"+ listaType.name() +".csv" );
     }
 }
